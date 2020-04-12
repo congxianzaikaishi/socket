@@ -1,0 +1,59 @@
+
+socket(AF_INET,SOCKET_TREAM) 建立套接字
+.bind(('127.0.0.1','8789'))
+.listen(5) 监听
+.accept() 连接 返回 连接套接字与地址
+.recv() 接受消息TCP
+.send() 传送消息TCP
+.recvfrom() 接受消息UDP
+.sendto() 接受消息UDP
+.close() 关闭套接字
+
+client.py(客户端)
+
+from socket import *
+
+HOST = '127.0.0.1'
+PORT = 21555
+BUFSIZ = 1024
+ADDR =(HOST,PORT)
+TCP_client = socket(AF_INET,SOCK_STREAM)
+TCP_client.connect(ADDR)
+while True:
+    data = input('>>>')
+    if not data:
+        break
+    TCP_client.send(data.encode('utf-8'))
+    data = TCP_client.recv(BUFSIZ)
+    if not data:
+        break
+    print(data.decode('utf-8'))
+TCP_client.close()
+
+severer.py (服务器)
+
+
+import socket
+import time
+HOST = '127.0.0.1'
+PORT = 21555
+BUFSIZ = 1024
+ADDR =(HOST,PORT)
+
+TCP_Sever = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+TCP_Sever.bind(ADDR)
+TCP_Sever.listen(2)
+while True:
+    print('等待连接')
+    TCP_client, addr =TCP_Sever.accept()
+    print('已连接',addr)
+    while True:
+        data = TCP_client.recv(BUFSIZ)
+        print('data')
+        if not data:
+            break
+        print(data)
+        TCP_client.send('{}{}'.format(bytes(time.ctime(),'utf-8'),data).encode('utf-8'))
+    TCP_client.close
+TCP_Sever.close
+
